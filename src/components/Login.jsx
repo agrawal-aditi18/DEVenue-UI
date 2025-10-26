@@ -6,8 +6,11 @@ import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "../utils/constants";
 
 const Login = () => {
+const [firstName, setFirstName] = useState("");
+const [lastName, setLastName] = useState("");
 const [emailId, setEmailId] = useState("");
 const [password, setPassword] = useState("");
+const [isLoginForm, setIsLoginForm] = useState(true);
 const [error, setError] = useState("");
 const dispatch = useDispatch();
 const navigate = useNavigate();
@@ -30,12 +33,96 @@ const handleLogin = async () => {
   }
 }
 
+ const handleSignUp = async () => {
+   try {
+     const res = await axios.post(
+       BASE_URL + "/signup",
+       { firstName, lastName, emailId, password },
+       { withCredentials: true }
+     );
+     dispatch(addUser(res.data.data));
+     return navigate("/profile");
+   } catch (err) {
+     setError(err?.response?.data || "Something went wrong");
+   }
+ };
+
   return (
     <div className="flex justify-center my-10">
       <div className="card bg-base-200 w-96 shadow-sm">
         <div className="card-body">
-          <h2 className="card-title justify-center text-xl ">Login</h2>
+          <h2 className="card-title justify-center text-xl ">
+            {isLoginForm ? "Login" : "Sign Up"}
+          </h2>
           <div>
+            {!isLoginForm && (
+              <>
+                <fieldset className="fieldset">
+                  <legend className="fieldset-legend">First Name:</legend>
+                  <label className="input validator">
+                    <svg
+                      className="h-[1em] opacity-50"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                    >
+                      <g
+                        strokeLinejoin="round"
+                        strokeLinecap="round"
+                        strokeWidth="2.5"
+                        fill="none"
+                        stroke="currentColor"
+                      >
+                        <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                      </g>
+                    </svg>
+                    <input
+                      type="text"
+                      value={firstName}
+                      required
+                      placeholder="Enter here..."
+                      pattern="[A-Za-z][A-Za-z0-9\-]*"
+                      minlength="3"
+                      maxlength="30"
+                      title="Only letters, numbers or dash"
+                      onChange={(e) => setFirstName(e.target.value)}
+                    />
+                  </label>
+                </fieldset>
+                <fieldset className="fieldset">
+                  <legend className="fieldset-legend">Last Name:</legend>
+                  <label className="input validator">
+                    <svg
+                      className="h-[1em] opacity-50"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                    >
+                      <g
+                        strokeLinejoin="round"
+                        strokeLinecap="round"
+                        strokeWidth="2.5"
+                        fill="none"
+                        stroke="currentColor"
+                      >
+                        <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                      </g>
+                    </svg>
+                    <input
+                      type="text"
+                      value={lastName}
+                      required
+                      placeholder="Enter here..."
+                      pattern="[A-Za-z][A-Za-z0-9\-]*"
+                      minlength="3"
+                      maxlength="30"
+                      title="Only letters, numbers or dash"
+                      onChange={(e) => setLastName(e.target.value)}
+                    />
+                  </label>
+                </fieldset>{" "}
+              </>
+            )}
             <fieldset className="fieldset">
               <legend className="fieldset-legend">Email ID</legend>
               {/* <input type="text" className="input" placeholder="Type here" />
@@ -119,11 +206,19 @@ const handleLogin = async () => {
           <div className="card-actions justify-center">
             <button
               className="bg-primary text-base-100 btn "
-              onClick={handleLogin}
+              onClick={isLoginForm? handleLogin : handleSignUp}
             >
-              Login
+              {isLoginForm ? "Login" : "Sign Up"}
             </button>
           </div>
+          <p
+            className="m-auto cursor-pointer py-2 text-black "
+            onClick={() => setIsLoginForm((value) => !value)}
+          >
+            {isLoginForm
+              ? "New User? Signup Here."
+              : "Existing User? Login Here."}
+          </p>
         </div>
       </div>
     </div>
