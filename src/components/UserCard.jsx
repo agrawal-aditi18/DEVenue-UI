@@ -5,8 +5,9 @@ const UserCard = ({user}) => {
       <figure>
         <img src={photoUrl} alt="photo" />
       </figure>
-      <div className="card-body w-80">
+      <div className="card-body w-60">
         <h2 className="card-title text-2xl">{firstName + " " + lastName}</h2>
+        {age && gender && <p>{age + ", " + gender}</p>}
         <p>{about}</p>
         <div className="flex justify-between my-4 w-full">
           <button className="btn btn-primary text-red-500 ">Ignore</button>
